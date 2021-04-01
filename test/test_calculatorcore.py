@@ -13,4 +13,10 @@ def test_modifyconfig():
     calculator_core.modify_config_values(dic_test)
 
 
-test_modifyconfig()
+def test_calculatecost():
+    cost = calculator_core.calculate_cost(1, 30, 0.5, 100)
+    print(cost)
+
+
+# test_modifyconfig()
+# test_calculatecost()
