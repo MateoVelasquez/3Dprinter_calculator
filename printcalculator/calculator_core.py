@@ -2,12 +2,32 @@
 
 Contiene las funciones de calculo del programa.
 """
+import os
 import configparser
-from pathlib import PurePath
+import shutil
+from pathlib import Path, PurePath
 from math import pi
 # from typing import Optional, Dict
 
-INI_PATH = PurePath(__file__).parent.joinpath('config.ini')
+# Obteniendo ruta APPDATA/LOCAL
+APPDATAFOLDER = (Path(os.getenv('LOCALAPPDATA')).joinpath('3Dprincoscal'))
+# Rutas de los archivos de configuración.
+DEFAULT_INI_PATH = PurePath(__file__).parent.joinpath('config.ini')
+INI_PATH = APPDATAFOLDER.joinpath('config.ini')
+
+
+def verify_config_folder(defaultini=DEFAULT_INI_PATH,
+                         configpath=INI_PATH,
+                         folderconfig=APPDATAFOLDER):
+    """
+    """
+    if not folderconfig.exists():
+        # Creando carpeta de la calculadora si no existe.
+        folderconfig.mkdir(parents=True, exist_ok=True)
+    if not configpath.is_file():
+        # Copiando config.ini si no existe en esa ubicacion.
+        shutil.copy(str(defaultini), str(configpath))
+    pass
 
 
 def language_dic():
@@ -35,7 +55,7 @@ def language_dic():
     return text_dic
 
 
-def read_ini(rutaconfigpr=INI_PATH):
+def read_ini(rutaconfigpr=str(INI_PATH)):
     """Lee parámetros de configuración.
 
     Dado un archivo de configuración .ini, se leen los parámetros
@@ -62,7 +82,7 @@ def read_ini(rutaconfigpr=INI_PATH):
     return parametros_dic
 
 
-def modify_config_values(new_vals_dic, rutaconfigpr=INI_PATH):
+def modify_config_values(new_vals_dic, rutaconfigpr=str(INI_PATH)):
     """Modificar valores
 
     Modificar valores de configuracion.
