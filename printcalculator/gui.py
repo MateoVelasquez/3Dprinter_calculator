@@ -82,7 +82,7 @@ menu_bar = tk.Menu(window)
 file_menu = tk.Menu(menu_bar)
 file_menu.add_command(label='Configurar',
                       command=lambda: config_gui.main(window))
-file_menu.add_command(label='Exportar')
+# file_menu.add_command(label='Exportar')
 file_menu.add_separator()
 file_menu.add_command(label='Salir', command=window.destroy)
 # Creacion del menú help.
