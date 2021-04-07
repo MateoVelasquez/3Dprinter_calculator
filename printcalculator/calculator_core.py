@@ -7,7 +7,7 @@ import configparser
 import shutil
 from pathlib import Path, PurePath
 from math import pi
-# from typing import Optional, Dict
+from typing import Dict, Optional
 
 # Obteniendo ruta APPDATA/LOCAL
 APPDATAFOLDER = (Path(os.getenv('LOCALAPPDATA')).joinpath('3Dprincoscal'))
@@ -19,34 +19,54 @@ INI_PATH = APPDATAFOLDER.joinpath('config.ini')
 def verify_config_folder(defaultini=DEFAULT_INI_PATH,
                          configpath=INI_PATH,
                          folderconfig=APPDATAFOLDER):
-    """
+    """Verificar folder de configuración.
+
+    Verifica la existencia de la carpeta de configuración en APPDATA/Local.
+    En caso de no existir, se crea junto con una copia de la configuración.
+
+    Parameters
+    ----------
+    defaultini: str
+        Ruta del archivo de configuración por defecto.
+    configpath: str
+        Ruta de salida del archivo de configuración.
+    folderconfig: str
+        Ruta de la carpeta de configuración.
     """
     if not folderconfig.exists():
         # Creando carpeta de la calculadora si no existe.
         folderconfig.mkdir(parents=True, exist_ok=True)
     if not configpath.is_file():
-        # Copiando config.ini si no existe en esa ubicacion.
+        # Copiando config.ini si no existe en esa ubicación.
         shutil.copy(str(defaultini), str(configpath))
-    pass
 
 
-def language_dic():
+def language_dic() -> Dict:
+    """Diccionario de lenguaje.
+
+    Exporta un diccionario de lenguaje.
+
+    Returns
+    -------
+    dict:
+        Diccionario de lenguaje.
+    """
     text_dic = {
         'MATERIAL_COST': "Costo del Material ($ / Kg)",
         'MATERIAL_DENSITY': 'Densidad del material (gr / cm^3)',
-        'SPOOL_WEIGTH': 'Peso del nucleo de la bobina (gr)',
+        'SPOOL_WEIGTH': 'Peso del núcleo de la bobina (gr)',
         'ELECTRIC_COST': 'Costo Eléctrico ( $ KW/h)',
         'PRINTER_POWER': 'Potencia de la impresora (W)',
         'PRINTER_PRICE': 'Precio de la impresora ($)',
-        'AMORTIZATION': 'Amortizacion de la máquina (años)',
+        'AMORTIZATION': 'Amortización de la máquina (años)',
         'DAILY_PRINTER_TIME': 'Uso diario de la máquina (h)',
         'FAILURE_RATE': 'Porcentaje de fallos (%)',
         'WORKFORCE_COST': 'Costo de mano de obra',
         'ACCEPT': 'Aceptar',
         'CANCEL': 'Cancelar',
-        'MAIN_TITLE': 'Calculadora de impresion 3D',
-        'HOURS': 'Horas de impresion',
-        'MINUTES': 'Minutos de impresion',
+        'MAIN_TITLE': 'Calculadora de impresión 3D',
+        'HOURS': 'Horas de impresión',
+        'MINUTES': 'Minutos de impresión',
         'MATERIAL': 'Cantidad del material',
         'WORKMANTIME': 'Horas de mano de obra',
         'CALCULATE': 'Calcular',
@@ -55,15 +75,17 @@ def language_dic():
     return text_dic
 
 
-def read_ini(rutaconfigpr=str(INI_PATH)):
+def read_ini(rutaconfigpr=str(INI_PATH)) -> Dict:
     """Lee parámetros de configuración.
 
     Dado un archivo de configuración .ini, se leen los parámetros
     y se devuelven como un diccionario.
+
     Parameters
     ----------
     rutaconfigpr: str
         Ruta del archivo de configuración de parámetros.
+
     Returns
     -------
     parametros_dic: dict
@@ -82,10 +104,23 @@ def read_ini(rutaconfigpr=str(INI_PATH)):
     return parametros_dic
 
 
-def modify_config_values(new_vals_dic, rutaconfigpr=str(INI_PATH)):
-    """Modificar valores
+def modify_config_values(new_vals_dic,
+                         rutaconfigpr=str(INI_PATH)) -> Optional[str]:
+    """Modificar valores de configuración.
 
-    Modificar valores de configuracion.
+    Modificar valores de configuración.
+
+    Parameters
+    ----------
+    new_vals_dic: dict
+        Diccionario de valores a modificar
+    rutaconfigpr: str
+        Ruta del archivo de configuración a modificar.
+
+    Returns
+    -------
+    Optional:
+        Str con mensaje de error si falla, None si no hay errores.
     """
     errs = None
     try:
@@ -103,10 +138,11 @@ def modify_config_values(new_vals_dic, rutaconfigpr=str(INI_PATH)):
     return errs
 
 
-def calculate_cost(hrs: int, mins: int, workhrs: float, material: float):
+def calculate_cost(hrs: int, mins: int,
+                   workhrs: float, material: float) -> int:
     """Calcular costo.
 
-    Función para calcular el costo de la impresion 3D
+    Función para calcular el costo de la impresión 3D.
 
     Parameters
     ----------
@@ -117,14 +153,14 @@ def calculate_cost(hrs: int, mins: int, workhrs: float, material: float):
     workhrs: float
         Tiempo de mano de obra dedicado.
     material: float
-        Material gastado en milimetros.
+        Material gastado en milímetros.
     cfgdic_in: Dict
-        Diccionario de parametros de configuracion.
+        Diccionario de parámetros de configuración.
 
     Returns
     -------
     int:
-        Costo total de la impresion 3D en la unidad configurada.
+        Costo total de la impresión 3D en la unidad configurada.
     """
     cfgdic = read_ini()['CONFIGURATION']
     mat_in_mm = bool(int(cfgdic['IN_MM']))
@@ -134,16 +170,16 @@ def calculate_cost(hrs: int, mins: int, workhrs: float, material: float):
               material / 10)
     else:
         gr = material
-    # Calculando tiempo completo de impresion:
+    # Calculando tiempo completo de impresión:
     totalh = hrs + mins / 60
-    # Calculando costo electrico.
+    # Calculando costo eléctrico.
     eleccost = int(cfgdic['ELECTRIC_COST']) / 1000 * totalh
     # Calculando costo de material.
     matcost = gr * (int(cfgdic['MATERIAL_COST']) /
                     (1000 - int(cfgdic['SPOOL_WEIGTH'])))
     # Calculando costo de mano de obra:
     workmancost = workhrs * int(cfgdic['WORKFORCE_COST'])
-    # Calculando amortizacion de la maquina.
+    # Calculando amortización de la maquina.
     amort = (int(cfgdic['PRINTER_PRICE']) /
              (int(cfgdic['AMORTIZATION']) * 250 *
               int(cfgdic['DAILY_PRINTER_TIME'])))

@@ -1,14 +1,30 @@
-"""Interfaz de configuracion.
+"""Interfaz de configuración.
+
+Contiene las funciones de la interfaz de configuración
 """
 import tkinter as tk
 from tkinter import messagebox
 import calculator_core
+from typing import Dict, Tuple
 
 
-def createtextbox(configwindow, config_dic):
+def createtextbox(configwindow: object, config_dic: Dict) -> Tuple[Dict, int]:
     """Crear cajas de texto.
 
-    Funcion para crear las cajas de texto y almacenar valores.
+    Función para crear las cajas de texto y almacenar valores.
+
+    Parameters
+    ----------
+    configwindow: tkinter.Tk
+        Ventana de raíz de configuración.
+    config_dic: Dict
+        Diccionario de configuración.
+
+    Returns
+    -------
+    Tuple[Dict, int]:
+        Tupla que contiene diccionario de cajas de texto y su
+        posición máxima en pixeles.
     """
     if 'IN_MM' in config_dic:
         config_dic.pop('IN_MM')
@@ -25,10 +41,17 @@ def createtextbox(configwindow, config_dic):
     return textbox, i + 2
 
 
-def acept_button_fn(congigwindow, entry_obs):
-    """Funcion de boton aceptar
+def acept_button_fn(configwindow: object, entry_obs: object):
+    """Función de botón aceptar
 
     Contiene la rutina a realizar por el botón aceptar.
+
+    Parameters
+    ----------
+    configwindow: tkinter.Tk
+        Ventana principal de configuración.
+    entry_obs: Dict
+        Diccionario que contiene objetos tkinter.Entry
     """
     newdic = {}
     for key, objs in entry_obs.items():
@@ -37,27 +60,43 @@ def acept_button_fn(congigwindow, entry_obs):
     if status:
         messagebox.showerror("Error almacenando parámetros", status)
     else:
-        congigwindow.destroy()
+        configwindow.destroy()
 
 
 def radiob1():
+    """Radio botón 1
+
+    Función que ejecuta el radio botón 1.
+    """
     status = calculator_core.modify_config_values({'IN_MM': 0})
     if status:
         messagebox.showerror("Error almacenando parámetros", status)
-    pass
 
 
 def radiob2():
+    """Radio botón 2
+
+    Función que ejecuta el radio botón 2.
+    """
     status = calculator_core.modify_config_values({'IN_MM': 1})
     if status:
         messagebox.showerror("Error almacenando parámetros", status)
-    pass
 
 
-def create_buttons(configwindow, inframe, entry_obs, place):
+def create_buttons(configwindow: object, inframe: object,
+                   entry_obs: Dict, place: int):
     """Crear botones
 
-    Crea botones en la ventana de configuracion.
+    Crea botones en la ventana de configuración.
+
+    Parameters
+    ----------
+    configwindow: tkinter.Tk
+        Ventana principal de configuración.
+    inframe: tkinter.Frame
+        Marco donde serán ubicados los botones.
+    place: int
+        Posición grid a la cual se empezarán a graficar los botones.
     """
     text_dic = calculator_core.language_dic()
     tk.Button(inframe,
@@ -69,7 +108,18 @@ def create_buttons(configwindow, inframe, entry_obs, place):
               command=configwindow.destroy).grid(row=place + 2, column=1)
 
 
-def create_radiobuttons(frameparent, conf_dic):
+def create_radiobuttons(frameparent: object, conf_dic: Dict):
+    """Crear radio botones.
+
+    Crea los radio botones.
+
+    Parameters
+    ----------
+    frameparent: tkinter.Frame
+        Marco donde se graficarán los radio botones.
+    conf_dic: Dict
+        Diccionario de configuración.
+    """
     text_dic = calculator_core.language_dic()
     label_text = f"{text_dic['MAT_UNIT']}:          "
     tk.Label(frameparent, text=label_text).grid(row=0, column=0)
@@ -86,7 +136,16 @@ def create_radiobuttons(frameparent, conf_dic):
 
 
 def main(window):
-    # Leer configuracion ini.
+    """Principal
+
+    Rutina principal del GUI de configuración.
+
+    Parameters
+    ----------
+    window: tkinter.Tk
+        Ventana del aplicativo.
+    """
+    # Leer configuración ini.
     config_dic = calculator_core.read_ini()['CONFIGURATION']
     # Crear GUI
     confg = tk.Toplevel(window)
@@ -94,7 +153,7 @@ def main(window):
     confg.geometry("350x320+124+124")
     # Crear titulo
     tk.Label(confg, text='CONFIGURACION', font='Helvetica 18 bold').pack()
-    # Crear radiobotones
+    # Crear radio botones
     radiobframe = tk.Frame(confg)
     radiobframe.pack()
     create_radiobuttons(radiobframe, config_dic)
