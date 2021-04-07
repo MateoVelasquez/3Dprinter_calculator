@@ -10,13 +10,23 @@ def test_modifyconfig():
         'MATERIAL_COST': '70000',
         'FAILURE_RATE': '10'
     }
-    calculator_core.modify_config_values(dic_test)
+    status = calculator_core.modify_config_values(dic_test)
+    if not status:
+        msg = 'Correcto'
+    else:
+        msg = 'Problema en la función.'
+    print('PRUEBA DE MODIFICACION INI: ', msg)
 
 
 def test_calculatecost():
     cost = calculator_core.calculate_cost(1, 30, 0.5, 100)
-    print(cost)
+    if cost:
+        msg = 'Correcto'
+    else:
+        msg = 'Problema en la función'
+    print('PRUEBA DE CALCULO: ', msg)
 
 
-# test_modifyconfig()
-# test_calculatecost()
+print('\n')
+test_modifyconfig()
+test_calculatecost()
