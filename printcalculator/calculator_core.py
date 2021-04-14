@@ -138,8 +138,8 @@ def modify_config_values(new_vals_dic,
     return errs
 
 
-def calculate_cost(hrs: int, mins: int,
-                   workhrs: float, material: float) -> int:
+def calculate_cost(hrs: int, mins: int, workhrs: float,
+                   material: float) -> int:
     """Calcular costo.
 
     Función para calcular el costo de la impresión 3D.
@@ -171,18 +171,20 @@ def calculate_cost(hrs: int, mins: int,
     else:
         gr = material
     # Calculando tiempo completo de impresión:
-    totalh = hrs + mins / 60
+    totalh = hrs + (mins / 60)
     # Calculando costo eléctrico.
-    eleccost = int(cfgdic['ELECTRIC_COST']) / 1000 * totalh
+    eleccost = (int(cfgdic['ELECTRIC_COST']) / 1000 * totalh *
+                int(cfgdic['PRINTER_POWER']))
     # Calculando costo de material.
     matcost = gr * (int(cfgdic['MATERIAL_COST']) /
                     (1000 - int(cfgdic['SPOOL_WEIGTH'])))
     # Calculando costo de mano de obra:
     workmancost = workhrs * int(cfgdic['WORKFORCE_COST'])
-    # Calculando amortización de la maquina.
+    # Calculando amortización de la maquina. 300 equivale a Num. de dias en uso
     amort = (int(cfgdic['PRINTER_PRICE']) /
-             (int(cfgdic['AMORTIZATION']) * 250 *
-              int(cfgdic['DAILY_PRINTER_TIME'])))
+             (int(cfgdic['AMORTIZATION']) * 300 *
+              int(cfgdic['DAILY_PRINTER_TIME']))) * totalh
+    # Sumando costo total de impresion.
     totalimpcost = eleccost + matcost + workmancost + amort
     # Calculando sobre porcentaje de fallas
     totalimpcost = totalimpcost * (1 + int(cfgdic['FAILURE_RATE']) / 100)
