@@ -24,12 +24,12 @@ Este repositorio cuenta con dos ramas, de las cuales dev es la rama a la cual se
 
 ### Instalación.
 
-Una vez empaquetada la aplicación median PyInstaller, esta se vuelve un ejecutable y no es necesario instalarla.
+Una vez empaquetada la aplicación mediante PyInstaller, esta se vuelve un ejecutable y no es necesario instalarla.
 
 ## Ejecución de pruebas
 
-Para ejecutar la prueba de funciones del backend, es necesario ejecutar el script test_calculatorcore.py que se encuentra dentro de la carpeta [test](https://github.com/MateoVelasquez/3Dprinter_calculator/tree/main/test).
-Es importante ejecutar este script con la consola ubicada en la carpeta con el comando:
+Para realizar la prueba de funciones del backend, es necesario ejecutar el script test_calculatorcore.py que se encuentra dentro de la carpeta [test](https://github.com/MateoVelasquez/3Dprinter_calculator/tree/main/test).
+Es importante ejecutar este script con la consola ubicada en la carpet /test con el comando:
 
 ```
 python test_calculatorcore.py
